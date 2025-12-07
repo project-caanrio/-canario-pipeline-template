@@ -70,13 +70,9 @@ deploy_stage:
   script:
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - echo "Bruker image-tag for stage:$HUMAN_TAG"
-
     - sed -i "s|<IMAGE_TAG>|$HUMAN_TAG|g" "$STAGE_STACK_FILE"
-
-    - scp "$STAGE_STACK_FILE" "$DEPLOY_HOST:$STAGE_REMOTE_PATH"
-    - ssh "$DEPLOY_HOST" "sudo docker stack deploy -c $STAGE_REMOTE_PATH $STAGE_STACK_NAME"
-    - scp -o StrictHostKeyChecking=no "$PROD_STACK_FILE" "$DEPLOY_HOST:$PROD_REMOTE_PATH"
-    - ssh -o StrictHostKeyChecking=no "$DEPLOY_HOST" "sudo docker stack deploy -c $PROD_REMOTE_PATH $PROD_STACK_NAME"
+    - scp -o StrictHostKeyChecking=no "$STAGE_STACK_FILE" "$DEPLOY_HOST:$STAGE_REMOTE_PATH"
+    - ssh -o StrictHostKeyChecking=no "$DEPLOY_HOST" "sudo docker stack deploy -c $STAGE_REMOTE_PATH $STAGE_STACK_NAME"
 
 
 deploy_prod:
@@ -88,11 +84,7 @@ deploy_prod:
   script:
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - echo "Bruker image-tag for prod:$HUMAN_TAG"
-
     - sed -i "s|<IMAGE_TAG>|$HUMAN_TAG|g" "$PROD_STACK_FILE"
-
-    - scp "$PROD_STACK_FILE" "$DEPLOY_HOST:$PROD_REMOTE_PATH"
-    - ssh "$DEPLOY_HOST" "sudo docker stack deploy -c $PROD_REMOTE_PATH $PROD_STACK_NAME"
     - scp -o StrictHostKeyChecking=no "$PROD_STACK_FILE" "$DEPLOY_HOST:$PROD_REMOTE_PATH"
     - ssh -o StrictHostKeyChecking=no "$DEPLOY_HOST" "sudo docker stack deploy -c $PROD_REMOTE_PATH $PROD_STACK_NAME"
 
