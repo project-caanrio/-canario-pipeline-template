@@ -5,6 +5,9 @@ stages:
 
 image: docker:latest
 
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+
 # Felles variabler (kan overstyres i kunderepo)
 variables:
   IMAGE_REPOSITORY: "$CI_REGISTRY_IMAGE"
@@ -25,14 +28,9 @@ variables:
   # Felles deploy-host (kan også overstyres)
   DEPLOY_HOST: "ubuntu@192.168.47.26"
 
-.docker_login: &docker_login
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-
 build:
   stage: build
   script:
-    - *docker_login
-
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - FULL_HUMAN="$IMAGE_REPOSITORY:$HUMAN_TAG"
 
@@ -47,8 +45,6 @@ test:
   stage: test
   needs: [build]
   script:
-    - *docker_login
-
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - FULL_HUMAN="$IMAGE_REPOSITORY:$HUMAN_TAG"
 
@@ -70,8 +66,6 @@ deploy_stage:
     name: staging
     url: "$STAGE_URL"
   script:
-    - *docker_login
-
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - echo "Bruker image-tag for stage:$HUMAN_TAG"
 
@@ -87,8 +81,6 @@ deploy_prod:
     name: production
     url: "$PROD_URL"
   script:
-    - *docker_login
-
     - HUMAN_TAG="LOv$CI_PIPELINE_IID"
     - echo "Bruker image-tag for prod:$HUMAN_TAG"
 
