@@ -125,7 +125,7 @@ deploy_production:
 
     # Kopier stack-fil og deploy stack
     - scp prod_deploy.yaml "$DEPLOY_USER@$DEPLOY_HOST:$PROD_REMOTE_PATH"
-    - ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo docker stack deploy -c $PROD_REMOTE_PATH $PROD_STACK_NAME"
+    - ssh "$DEPLOY_USER@$DEPLOY_HOST" "sudo docker stack deploy -c $PROD_STACK_NAME -c $PROD_REMOTE_PATH"
   environment:
     name: production
     url: $PROD_URL
