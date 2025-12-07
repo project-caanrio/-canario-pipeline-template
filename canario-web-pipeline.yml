@@ -30,9 +30,8 @@ variables:
   PROD_STACK_NAME: ${PROD_STACK_NAME:-"canario"}
   PROD_URL: ${PROD_URL:-"http://192.168.47.26:8080"}
 
-# Gjenbrukbar docker-login
-.docker_login: &docker_login
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+.docker_login: &docker_login >
+  echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
 
 
 build_image:
@@ -70,7 +69,6 @@ test_container:
     - sleep 5
     - curl -f "http://localhost:$TEST_PORT/" || (echo "App did not respond"; docker logs test-$CI_JOB_ID; exit 1)
     - docker rm -f test-$CI_JOB_ID || true
-  needs: ["build_image"]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
