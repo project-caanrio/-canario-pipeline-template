@@ -7,27 +7,26 @@ stages:
 image: docker:latest
 
 before_script:
-  # Felles docker login for alle jobber
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
 
-# Felles variabler (kan overstyres i kunderepo)
+#  Common variables (can be overridden in customer repos)
 variables:
   IMAGE_REPOSITORY: "$CI_REGISTRY_IMAGE"
   TEST_PORT: "8081"
 
-  # Stage-miljø
+  # Staging environment
   STAGE_STACK_FILE: "stack/web-stage.yaml"
   STAGE_REMOTE_PATH: "/home/ubuntu/stack/web-stage.yaml"
   STAGE_STACK_NAME: "canario-web-stage"
   STAGE_URL: "http://192.168.47.26:9081"
 
-  # Prod-miljø
+  # Prod environment
   PROD_STACK_FILE: "stack/web-prod.yaml"
   PROD_REMOTE_PATH: "/home/ubuntu/stack/web-prod.yaml"
   PROD_STACK_NAME: "canario-web"
   PROD_URL: "http://192.168.47.26:8081"
 
-  # Felles deploy-host
+  # Shared deploy host
   DEPLOY_HOST: "ubuntu@192.168.47.26"
 
 build:
